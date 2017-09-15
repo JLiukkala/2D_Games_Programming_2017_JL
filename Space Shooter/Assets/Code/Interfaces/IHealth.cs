@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IHealth : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+namespace SpaceShooter
+{
+    public interface IHealth
+    {
+        int CurrentHealth { get; }
+        void IncreaseHealth(int amount);
+        void DecreaseHealth(int amount);
+    }
 }

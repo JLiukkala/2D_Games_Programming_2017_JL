@@ -11,6 +11,8 @@ namespace SpaceShooter
 
         private Weapon[] _weapons;
 
+        private Health _health;
+
         public float Speed
         {
             get { return _speed; }
@@ -25,6 +27,7 @@ namespace SpaceShooter
         protected virtual void Awake()
         {
             _weapons = GetComponentsInChildren<Weapon>(includeInactive:true);
+            _health = GetComponent<Health>();
         } 
 
         protected void Shoot()
@@ -40,6 +43,12 @@ namespace SpaceShooter
         protected virtual void Update()
         {
             Move();
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            Projectile projectile = collision.gameObject.GetComponent<Projectile>();
+            _health.DecreaseHealth(projectile.GetDamage());
         }
     }
 }

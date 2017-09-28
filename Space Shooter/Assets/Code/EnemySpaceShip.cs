@@ -21,6 +21,18 @@ namespace SpaceShooter
             }
         }
 
+        public override Type UnitType
+        {
+            get { return Type.Enemy; }
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+
+            Shoot();
+        }
+
         public void SetMovementTargets(GameObject[] movementTargets)
         {
             _movementTargets = movementTargets;

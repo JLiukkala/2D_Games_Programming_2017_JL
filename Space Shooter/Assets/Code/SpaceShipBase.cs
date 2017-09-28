@@ -4,14 +4,19 @@ using UnityEngine;
 
 namespace SpaceShooter
 {
-    public abstract class SpaceShipBase : MonoBehaviour
+    [RequireComponent(typeof(IHealth))]
+    public abstract class SpaceShipBase : MonoBehaviour, IDamageReceiver
     {
+        public enum Type
+        {
+            Player,
+            Enemy
+        }
+
         [SerializeField]
         private float _speed = 1.5f;
 
         private Weapon[] _weapons;
-
-        private Health _health;
 
         public float Speed
         {
@@ -24,10 +29,14 @@ namespace SpaceShooter
             get{ return _weapons; }
         }
 
+        public IHealth Health { get; protected set; }
+
+        public abstract Type UnitType { get; }
+
         protected virtual void Awake()
         {
             _weapons = GetComponentsInChildren<Weapon>(includeInactive:true);
-            _health = GetComponent<Health>();
+            Health = GetComponent<IHealth>();
         } 
 
         protected void Shoot()
@@ -45,10 +54,29 @@ namespace SpaceShooter
             Move();
         }
 
-        private void OnTriggerEnter2D(Collider2D collision)
+        public void TakeDamage(int amount)
         {
-            Projectile projectile = collision.gameObject.GetComponent<Projectile>();
-            _health.DecreaseHealth(projectile.GetDamage());
+            Health.DecreaseHealth(amount);
+
+            if (Health.IsDead)
+            {
+                Die();
+            }
+        }
+
+        protected virtual void Die()
+        {
+            Destroy(gameObject);
+        }
+
+        protected Projectile GetPooledProjectile()
+        {
+            return LevelController.Current.GetProjectile(UnitType);
+        }
+
+        protected bool ReturnPooledProjectile(Projectile projectile)
+        {
+            return LevelController.Current.ReturnProjectile(UnitType, projectile);
         }
     }
 }

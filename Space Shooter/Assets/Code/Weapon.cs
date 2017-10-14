@@ -34,12 +34,13 @@ namespace SpaceShooter
                 projectile.transform.position = transform.position;
                 projectile.transform.rotation = transform.rotation;
                 projectile.Launch(this, transform.up);
+
+                _isInCooldown = true;
+                _timeSinceShot = 0;
+
+                return true;
             }
-
-            _isInCooldown = true;
-            _timeSinceShot = 0;
-
-            return true;
+            return false;
         }
 
         public bool DisposeProjectile(Projectile projectile)

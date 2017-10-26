@@ -15,6 +15,8 @@ namespace SpaceShooter
         
         private int _currentHealth; //Creates a variable called _currentHealth.
 
+        private bool _isImmortal = false;
+
         public void Awake()
         {
             CurrentHealth = _initialHealth; //The current health is set to be the same as the initial health.
@@ -32,6 +34,14 @@ namespace SpaceShooter
             }
         }
 
+        public int MaximumHealth
+        {
+            get
+            {
+                return _maxHealth;
+            }
+        } 
+
         public bool IsDead
         {
             get { return CurrentHealth == _minHealth; }
@@ -39,12 +49,20 @@ namespace SpaceShooter
 
         public void DecreaseHealth(int amount)
         {
-            CurrentHealth -= amount;
+            if (!_isImmortal)
+            {
+                CurrentHealth -= amount;
+            }
         }
 
         public void IncreaseHealth(int amount)
         {
             CurrentHealth += amount;
+        }
+
+        public void SetImmortal (bool isImmortal) 
+        {
+            _isImmortal = isImmortal;
         }
     }
 }

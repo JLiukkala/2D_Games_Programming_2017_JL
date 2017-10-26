@@ -10,6 +10,14 @@ namespace SpaceShooter
         public const string VerticalAxis = "Vertical";
         public const string FireButtonName = "Fire1";
 
+        //[SerializeField]
+        public int playerLives;
+
+        [SerializeField]
+        private float _immortalTime = 1;
+
+        private float _blinkInterval = 0.1f;
+
         public override Type UnitType
         {
             get { return Type.Player; }
@@ -38,6 +46,55 @@ namespace SpaceShooter
             Vector3 inputVector = GetInputVector();
             Vector2 movementVector = inputVector * Speed;
             transform.Translate(movementVector * Time.deltaTime);
+        }
+
+        protected override void Die()
+        {
+            base.Die();
+            GameManager.Instance.CurrentLives--;
+        }
+
+        public void BecomeImmortal()
+        {
+            var coroutine = StartCoroutine(ImmortalRoutine());
+        }
+
+        private IEnumerator ImmortalRoutine()
+        {
+            Health.SetImmortal(true);
+            SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+            if (spriteRenderer == null)
+            {
+                throw new System.Exception("No renderer found from PlayerSpaceship object!");
+            }
+
+            float timer = 0;
+            Color color = spriteRenderer.color;
+
+            while (timer < _immortalTime)
+            {
+                timer += _blinkInterval;
+                color = spriteRenderer.color;
+                // These two below are the same thing (if-else).
+                color.a = color.a == 1 ? 0 : 1;
+                //if (color.a == 1)
+                //{
+                //    color.a = 0;
+                //}
+                //else
+                //{
+                //    color.a = 1;
+                //}
+                spriteRenderer.color = color;
+
+                yield return new WaitForSeconds(_blinkInterval);
+            }
+
+            color = spriteRenderer.color;
+            color.a = 1;
+            spriteRenderer.color = color;
+
+            Health.SetImmortal(false);
         }
     }
 }

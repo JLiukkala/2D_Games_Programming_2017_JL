@@ -12,6 +12,9 @@ namespace SpaceShooter
         }
 
         [SerializeField]
+        private Spawner _playerSpawner;
+
+        [SerializeField]
         private Spawner _enemySpawner;
 
         [SerializeField]
@@ -34,6 +37,9 @@ namespace SpaceShooter
         [SerializeField]
         private GameObjectPool _enemyProjectilePool;
 
+        [SerializeField]
+        private PlayerSpaceship _playerUnit;
+
         //Amount of enemies spawned so far.
         private int _enemyCount;
 
@@ -48,6 +54,13 @@ namespace SpaceShooter
                 Debug.LogError("There are multiple LevelControllers in the scene!");
             }
 
+            if (_playerSpawner == null)
+            {
+                Debug.Log("No reference to a player spawner!");
+                //_playerSpawner = GameObject.FindObjectOfType<Spawner>();
+                _playerSpawner = GetComponentInChildren<Spawner>();
+            }
+
             if (_enemySpawner == null)
             {
                 Debug.Log("No reference to an enemy spawner!");
@@ -58,11 +71,13 @@ namespace SpaceShooter
 
         protected void Start()
         {
+            SpawnPlayer();
+
             //Starts a new coroutine.
-            StartCoroutine(SpawnRoutine());
+            StartCoroutine(SpawnEnemyRoutine());
         }
 
-        private IEnumerator SpawnRoutine()
+        private IEnumerator SpawnEnemyRoutine()
         {
             // Wait for a while before spawning the first enemy.
             yield return new WaitForSeconds(_waitToSpawn);
@@ -81,6 +96,26 @@ namespace SpaceShooter
                 }
                 yield return new WaitForSeconds(_spawnInterval);
             }
+        }
+
+        public PlayerSpaceship SpawnPlayer()
+        {
+            PlayerSpaceship playerShip = null;
+            GameObject spawnedPlayerObject = _playerSpawner.Spawn();
+            if (spawnedPlayerObject != null)
+            {
+                playerShip = spawnedPlayerObject.GetComponent<PlayerSpaceship>();
+            }
+
+            playerShip.BecomeImmortal();
+
+            return playerShip;
+
+            //if (_playerUnit.playerLives > 0)
+            //{
+            //    _playerSpawner.Spawn();
+            //    _playerUnit.GetComponent<Health>().IncreaseHealth(_playerUnit.GetComponent<Health>().MaximumHealth);
+            //}
         }
 
         private EnemySpaceShip SpawnEnemyUnit()
@@ -133,6 +168,31 @@ namespace SpaceShooter
             else
             {
                 return _enemyProjectilePool.ReturnObject(projectile.gameObject);
+            }
+        }
+
+        void Update()
+        {
+            if (_playerUnit.GetComponent<Health>().CurrentHealth <= 0)
+            {
+                if (_playerUnit.playerLives > 0)
+                {
+                    PlayerSpaceship player = SpawnPlayer();
+                    _playerUnit.GetComponent<Health>().IncreaseHealth(_playerUnit.GetComponent<Health>().MaximumHealth);
+                    Debug.Log("Totally spawned again, dude!");
+                }
+            }
+        }
+
+        public void LivesLost()
+        {
+            if(GameManager.Instance.CurrentLives <= 0)
+            {
+                //TO DO: Game Over!
+            }
+            else
+            {
+                SpawnPlayer();
             }
         }
     }

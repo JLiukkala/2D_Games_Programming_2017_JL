@@ -146,7 +146,6 @@ MonoBehaviour:
   _maxEnemyUnitsToSpawn: 5
   _playerProjectilePool: {fileID: 1089700368}
   _enemyProjectilePool: {fileID: 1935077906}
-  _immortalTime: 1
   _playerUnit: {fileID: 114155072823578592, guid: 4baf7e122a68bd64f8d86236bcbeecfa,
     type: 2}
 --- !u!4 &182428252

@@ -68,7 +68,7 @@ namespace SpaceShooter
                 throw new System.Exception("No renderer found from PlayerSpaceship object!");
             }
 
-            float timer = 0;
+            float timer = 0f;
             Color color = spriteRenderer.color;
 
             while (timer < _immortalTime)

@@ -143,11 +143,14 @@ MonoBehaviour:
   - {fileID: 839297113}
   _spawnInterval: 1
   _waitToSpawn: 1
-  _maxEnemyUnitsToSpawn: 5
+  _maxEnemyUnitsToSpawn: 8
   _playerProjectilePool: {fileID: 1089700368}
   _enemyProjectilePool: {fileID: 1935077906}
   _playerUnit: {fileID: 114155072823578592, guid: 4baf7e122a68bd64f8d86236bcbeecfa,
     type: 2}
+  _targetEnemiesKilled: 8
+  _nextState: 2
+  _isLastLevel: 0
 --- !u!4 &182428252
 Transform:
   m_ObjectHideFlags: 0

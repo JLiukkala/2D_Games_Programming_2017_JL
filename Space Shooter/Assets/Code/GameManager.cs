@@ -47,15 +47,18 @@ namespace SpaceShooter
             }
         }
 
+        public bool PlayerWins { get; set; }
+
         private void Awake()
         {
             if (_instance == null)
             {
                 _instance = this;
             }
-            else if (_instance != null)
+            else if (_instance != this)
             {
                 Destroy(gameObject);
+                Debug.LogWarning("Destroying duplicate GameManager!");
                 return;
             }
 
@@ -64,6 +67,7 @@ namespace SpaceShooter
 
         private void Init()
         {
+            Debug.Log("Initializing GameManager!");
             DontDestroyOnLoad(gameObject);
             Reset();
         }
@@ -72,6 +76,12 @@ namespace SpaceShooter
         {
             _currentLives = _startingLives;
             CurrentScore = 0;
+            PlayerWins = false;
+        }
+
+        public void IncrementScore(int amount)
+        {
+            CurrentScore += amount;
         }
     }
 }

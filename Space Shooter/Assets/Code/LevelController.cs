@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SpaceShooter.States;
 
 namespace SpaceShooter
 {
@@ -40,8 +41,19 @@ namespace SpaceShooter
         [SerializeField]
         private PlayerSpaceship _playerUnit;
 
+        [SerializeField]
+        private int _targetEnemiesKilled = 5;
+
+        [SerializeField]
+        private GameStateType _nextState;
+
+        [SerializeField]
+        private bool _isLastLevel = false;
+
         //Amount of enemies spawned so far.
         private int _enemyCount;
+
+        private int _killedEnemies = 0;
 
         protected void Awake()
         {
@@ -71,10 +83,10 @@ namespace SpaceShooter
 
         protected void Start()
         {
-            SpawnPlayer();
-
             //Starts a new coroutine.
             StartCoroutine(SpawnEnemyRoutine());
+
+            SpawnPlayer();
         }
 
         private IEnumerator SpawnEnemyRoutine()
@@ -98,6 +110,23 @@ namespace SpaceShooter
             }
         }
 
+        public void EnemyDestroyed()
+        {
+            _killedEnemies++;
+            if (_killedEnemies >= _targetEnemiesKilled)
+            {
+                if (_isLastLevel)
+                {
+                    GameManager.Instance.PlayerWins = true;
+                }
+
+                if (GameStateController.PerformTransition(_nextState) == false)
+                {
+                    Debug.LogError("Could not change state to " + _nextState);
+                }
+            }
+        }
+
         public PlayerSpaceship SpawnPlayer()
         {
             PlayerSpaceship playerShip = null;
@@ -110,12 +139,6 @@ namespace SpaceShooter
             playerShip.BecomeImmortal();
 
             return playerShip;
-
-            //if (_playerUnit.playerLives > 0)
-            //{
-            //    _playerSpawner.Spawn();
-            //    _playerUnit.GetComponent<Health>().IncreaseHealth(_playerUnit.GetComponent<Health>().MaximumHealth);
-            //}
         }
 
         private EnemySpaceShip SpawnEnemyUnit()
@@ -188,7 +211,7 @@ namespace SpaceShooter
         {
             if(GameManager.Instance.CurrentLives <= 0)
             {
-                //TO DO: Game Over!
+                GameStateController.PerformTransition(GameStateType.GameOver);
             }
             else
             {

@@ -120,6 +120,9 @@ MonoBehaviour:
   _speed: 3
   _reachedDistance: 0.5
   _score: 20
+  chanceToSpawn: 40
+  _powerUpPrefab: {fileID: 1647102948917740, guid: 7cd2b15442cac1147a80d4c0bd3e1509,
+    type: 2}
 --- !u!114 &114227897471210562
 MonoBehaviour:
   m_ObjectHideFlags: 1

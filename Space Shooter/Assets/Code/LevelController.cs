@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 using SpaceShooter.States;
 
 namespace SpaceShooter
@@ -50,6 +51,10 @@ namespace SpaceShooter
         [SerializeField]
         private bool _isLastLevel = false;
 
+        // A text component which indicates how much health the player has.
+        [SerializeField]
+        private TextMeshProUGUI _playerHealthText;
+
         //Amount of enemies spawned so far.
         private int _enemyCount;
 
@@ -79,14 +84,20 @@ namespace SpaceShooter
                 //_enemySpawner = GameObject.FindObjectOfType<Spawner>();
                 _enemySpawner = GetComponentInChildren<Spawner>();
             }
+            // Setting the health text in the Awake method.
+            //SetHealthText();
         }
 
         protected void Start()
         {
+            // Setting the health text in the Start method.
+            SetHealthText();
+
             //Starts a new coroutine.
             StartCoroutine(SpawnEnemyRoutine());
 
-            SpawnPlayer();
+            // This was changed.
+            _playerUnit = SpawnPlayer();
         }
 
         private IEnumerator SpawnEnemyRoutine()
@@ -196,6 +207,9 @@ namespace SpaceShooter
 
         void Update()
         {
+            // Setting the health text in the Update method.
+            SetHealthText();
+
             if (_playerUnit.GetComponent<Health>().CurrentHealth <= 0)
             {
                 if (_playerUnit.playerLives > 0)
@@ -215,7 +229,19 @@ namespace SpaceShooter
             }
             else
             {
-                SpawnPlayer();
+                // This was changed.
+                _playerUnit = SpawnPlayer();
+            }
+        }
+
+        // This method sets the health text to be equal to the player's health.
+        public void SetHealthText()
+        {
+            if (_playerHealthText != null)
+            {
+                int playerHealth = _playerUnit.GetComponent<Health>().CurrentHealth;
+                _playerHealthText.text = "Health: " + playerHealth.ToString();
+                //Debug.Log("Text should appear!");
             }
         }
     }

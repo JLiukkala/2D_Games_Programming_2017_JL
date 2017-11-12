@@ -119,6 +119,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 5
   playerLives: 3
+  _playerHealthText: {fileID: 0}
   _immortalTime: 1
 --- !u!114 &114577388369083594
 MonoBehaviour:

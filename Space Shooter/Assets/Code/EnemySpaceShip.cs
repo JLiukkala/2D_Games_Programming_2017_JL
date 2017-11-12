@@ -12,6 +12,14 @@ namespace SpaceShooter
         [SerializeField]
         private int _score;
 
+        // The power-up's chance to spawn.
+        [SerializeField]
+        private int chanceToSpawn;
+
+        // The prefab of the power-up.
+        [SerializeField]
+        private GameObject _powerUpPrefab;
+
         private GameObject[] _movementTargets;
 
         private int _currentMovementTargetIndex = 0;
@@ -42,6 +50,15 @@ namespace SpaceShooter
             if (LevelController.Current != null)
             {
                 LevelController.Current.EnemyDestroyed();
+            }
+
+            // After an enemy is destroyed, there is a chance that it will 
+            // spawn a power-up. The chance is adjustable from the Unity Editor.
+            int i = Random.Range(0, 100);
+
+            if (i < chanceToSpawn)
+            {
+                SpawnPowerUp();
             }
 
             GameManager.Instance.IncrementScore(_score);
@@ -78,6 +95,12 @@ namespace SpaceShooter
                     _currentMovementTargetIndex++;
                 }
             }
+        }
+
+        // Spawns the power-up in the position of the enemy ship.
+        private void SpawnPowerUp()
+        {
+            _powerUpPrefab = Instantiate(_powerUpPrefab, transform.position, transform.rotation);
         }
     }
 }
